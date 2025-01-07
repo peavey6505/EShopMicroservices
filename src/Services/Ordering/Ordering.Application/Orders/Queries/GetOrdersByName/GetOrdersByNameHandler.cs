@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace Ordering.Application.Orders.Queries.GetOrdersByName
 {
-    public class GetOrdersByNameHandler(IApplicationDbContext context) : IQueryHandler<GetOrderByNameQuery, GetOrdersByNameResult>
+    public class GetOrdersByNameHandler(IApplicationDbContext context) : IQueryHandler<GetOrdersByNameQuery, GetOrdersByNameResult>
     {
-        public async Task<GetOrdersByNameResult> Handle(GetOrderByNameQuery request, CancellationToken cancellationToken)
+        public async Task<GetOrdersByNameResult> Handle(GetOrdersByNameQuery request, CancellationToken cancellationToken)
         {
             var result = await context
                 .Orders

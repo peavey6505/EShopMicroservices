@@ -11,6 +11,12 @@ namespace Ordering.Infrastructure.Data.Interceptors
             return base.SavingChanges(eventData, result);
         }
 
+        public override ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData, InterceptionResult<int> result, CancellationToken cancellationToken = default)
+        {
+            DispatchDomainEvents(eventData.Context).GetAwaiter().GetResult();
+            return base.SavingChangesAsync(eventData, result, cancellationToken);
+        }
+
         private async Task DispatchDomainEvents(DbContext? context)
         {
             if (context == null)
@@ -31,16 +37,10 @@ namespace Ordering.Infrastructure.Data.Interceptors
                 .ToList()
                 .ForEach(a => a.ClearDomainEvents());
 
-            foreach (var domainEvent in domainEvents) 
-            { 
+            foreach (var domainEvent in domainEvents)
+            {
                 await mediator.Publish(domainEvent);
             }
-        }
-
-        public override ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData, InterceptionResult<int> result, CancellationToken cancellationToken = default)
-        {
-            DispatchDomainEvents(eventData.Context).GetAwaiter().GetResult();
-            return base.SavingChangesAsync(eventData, result, cancellationToken);
         }
     }
 }
